@@ -1,0 +1,4 @@
+Target,Selected Features,R²,Adj-R²,AIC
+CSIA_mag,"age, eye_binary, AL1, IR, HCDA, SPA1, AV2",0.1337,0.1024,252.70
+J0,"eye_binary, AL, HCR, AL2",0.1341,0.1165,313.52
+J45,"eye_binary, age, WTW, CBiF",0.1094,0.0913,309.78

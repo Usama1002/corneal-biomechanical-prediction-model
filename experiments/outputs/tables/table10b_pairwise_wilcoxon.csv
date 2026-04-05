@@ -1,0 +1,7 @@
+Comparison,Wilcoxon_stat,p_value
+Pop centroid vs Clinical default (0.25D@45°),8213.0,0.01426346782386722
+Pop centroid vs Yin et al. formula,6795.0,3.250162575463422e-05
+Pop centroid vs Eye-specific centroid,7895.0,0.004613665743358963
+Pop centroid vs Age-tertile centroid,9753.0,0.5489955813201783
+Pop centroid vs Eye x Age centroid,8011.0,0.007072933501158276
+Pop centroid vs Mean mag @ eye direction,8330.0,0.02089321526395241
