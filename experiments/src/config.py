@@ -6,7 +6,11 @@ from pathlib import Path
 # ── Paths ──────────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # repo root
 EXPERIMENTS_ROOT = PROJECT_ROOT / "experiments"
-DATA_RAW = PROJECT_ROOT / "data" / "Corvis Data +CSIA.xlsx"
+# Corrected dataset (2026-05): full participant names, so bilateral patients are
+# identified by true identity (Chinese name) rather than colliding initials.
+DATA_RAW = PROJECT_ROOT / "data" / "Corvis Data +CSIA (corrected fullnames).xlsx"
+DATA_VALIDATION_JIANG = PROJECT_ROOT / "data" / "validation" / "Jiang_validation.xlsx"
+DATA_VALIDATION_BU = PROJECT_ROOT / "data" / "validation" / "Bu_validation.xlsx"
 DATA_PROCESSED = PROJECT_ROOT / "data" / "processed"
 
 OUTPUT_FIGURES = EXPERIMENTS_ROOT / "outputs" / "figures"
@@ -17,17 +21,25 @@ for d in [DATA_PROCESSED, OUTPUT_FIGURES, OUTPUT_TABLES, OUTPUT_RESULTS]:
     d.mkdir(parents=True, exist_ok=True)
 
 # ── Column mapping (Excel col index → clean name) ─────────────────────────
+# Layout of the corrected file (3 leading name columns; a blank col 28 before
+# CSIA). The three name columns are read for patient identity, then replaced by
+# an anonymous code in load_raw_data so no PII is persisted downstream.
 COLUMN_MAP = {
-    0: "patient_id", 1: "sex", 2: "age", 3: "eye",
-    4: "iol_type", 5: "iol_diopter",
-    6: "PCT135", 7: "AL", 8: "WTW",
-    9: "AL1", 10: "AV1", 11: "AL2", 12: "AV2",
-    13: "PD", 14: "HCR", 15: "HCDA",
-    16: "IOPnc", 17: "bIOP",
-    18: "CCT", 19: "SPA1", 20: "ARTh",
-    21: "DA_Ratio", 22: "IR", 23: "CBI", 24: "SSI", 25: "CBiF",
-    26: "CSIA_mag", 27: "CSIA_meridian",
+    0: "_chinese_name", 1: "_full_name", 2: "_initials",
+    3: "sex", 4: "age", 5: "eye",
+    6: "iol_type", 7: "iol_diopter",
+    8: "PCT135", 9: "AL", 10: "WTW",
+    11: "AL1", 12: "AV1", 13: "AL2", 14: "AV2",
+    15: "PD", 16: "HCR", 17: "HCDA",
+    18: "IOPnc", 19: "bIOP",
+    20: "CCT", 21: "SPA1", 22: "ARTh",
+    23: "DA_Ratio", 24: "IR", 25: "CBI", 26: "SSI", 27: "CBiF",
+    29: "CSIA_mag", 30: "CSIA_meridian",
 }
+
+# Columns holding personally identifying information; used only to derive the
+# anonymous patient grouping key, then dropped (never written to processed CSV).
+PII_COLS = ["_chinese_name", "_full_name", "_initials"]
 
 # ── Feature groups ─────────────────────────────────────────────────────────
 CORVIS_PARAMS = [
@@ -48,7 +60,7 @@ DEMOGRAPHIC_COLS = ["patient_id", "sex", "age", "eye", "iol_type", "iol_diopter"
 TARGET_COLS = ["CSIA_mag", "CSIA_meridian"]
 VECTOR_COLS = ["J0", "J45"]
 
-# ── Reference values from Yin et al. (2025) ────────────────────────────────────
+# ── Reference values from Prof. Bu 2025 ────────────────────────────────────
 YIN2025_CENTROID_MAG = 0.48
 YIN2025_CENTROID_MERIDIAN = 43.0
 YIN2025_FORMULA = lambda age, ir: 0.13 + 0.01 * age - 0.09 * ir

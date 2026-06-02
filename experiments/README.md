@@ -1,19 +1,19 @@
 # CSIA Vector Prediction Analysis
 
-Analysis pipeline for investigating the relationship between preoperative corneal biomechanical parameters (Corvis ST) and surgically induced corneal astigmatism (CSIA) in cataract surgery. This extends Yin et al.'s 2025 paper by analyzing the full CSIA vector (magnitude and direction), not magnitude alone.
+Analysis pipeline for investigating the relationship between preoperative corneal biomechanical parameters (Corvis ST) and surgically induced corneal astigmatism (CSIA) in cataract surgery. This extends Prof. Bu's 2025 paper by analyzing the full CSIA vector (magnitude and direction), not magnitude alone.
 
 ## Background
 
 During cataract surgery, the corneal incision changes the eye's astigmatism. This change is called CSIA (Corneal Surgically Induced Astigmatism). Predicting CSIA before surgery would improve outcomes with toric intraocular lenses.
 
-Yin et al.'s 2025 paper (Scientific Reports) found that CSIA magnitude could be predicted from two variables: `CSIA = 0.13 + 0.01 * Age - 0.09 * IR`. This project asks a harder question: can we predict both the magnitude and the direction (meridian) of CSIA from preoperative corneal biomechanics?
+Prof. Bu's 2025 paper (Scientific Reports) found that CSIA magnitude could be predicted from two variables: `CSIA = 0.13 + 0.01 * Age - 0.09 * IR`. This project asks a harder question: can we predict both the magnitude and the direction (meridian) of CSIA from preoperative corneal biomechanics?
 
 ## Dataset
 
 **Source**: `data/Corvis Data +CSIA.xlsx`
 
-- 202 eyes (92 OD, 110 OS) from 182 patients
-- 19 patients contribute multiple entries (11 bilateral, 7 same-eye repeats, 1 triple)
+- 202 eyes (92 OD, 110 OS) from 194 patients
+- 8 patients contribute both eyes (bilateral); the remaining 186 contribute one eye each (identity established from full names, then replaced by anonymous codes)
 - 3 Excel sheets: `All(OD+OS)`, `OD`, `OS`
 - Multi-row headers (rows 0-1 are headers, data starts at row 2)
 
@@ -100,17 +100,17 @@ Computes CSIA centroids (overall, OD, OS) with 95% confidence ellipses, tests OD
 - `fig03`: Rose diagram of CSIA meridian distribution
 - `fig04`: CSIA magnitude histogram with KDE
 - `table01`: Descriptive statistics (overall and by eye)
-- `table01b`: Centroid comparison (including Yin et al.'s published centroid)
+- `table01b`: Centroid comparison (including Prof. Bu's published centroid)
 
 ### Analysis 2: Association analysis
 
-Evaluates statistical associations between preoperative parameters and CSIA using multiple methods, replicating and extending Yin et al.'s approach.
+Evaluates statistical associations between preoperative parameters and CSIA using multiple methods, replicating and extending Prof. Bu's approach.
 
 **Methods**:
 - Bivariate Pearson correlations with Benjamini-Hochberg FDR correction
-- Partial correlations adjusting for Age, CCT, bIOP (Yin et al.'s covariates)
+- Partial correlations adjusting for Age, CCT, bIOP (Prof. Bu's covariates)
 - Partial correlations additionally adjusting for Eye laterality
-- Linear mixed-effects models (random intercept for patient, handles the 19 multi-entry patients)
+- Linear mixed-effects models (random intercept for patient, handles the 8 bilateral patients)
 - AIC-based stepwise multivariate regression
 - MANOVA on the CSIA vector (J0, J45) jointly
 - Variance Inflation Factor analysis
@@ -136,7 +136,7 @@ Systematic comparison of four model families under nested cross-validation.
 **Ablations**:
 - Stratified by eye (OD-only, OS-only models)
 - Stratified by age tertile
-- Yin et al.'s formula evaluated on the same CV folds
+- Prof. Bu's formula evaluated on the same CV folds
 - Multi-output regression (J0 + J45 jointly)
 
 **Interpretability**: SHAP values, permutation importance, partial dependence plots, Bland-Altman analysis.
@@ -157,7 +157,7 @@ Tests whether subgroup-specific CSIA centroids outperform fixed estimates and in
 
 **Strategy comparison** (via vector error in double-angle space):
 - Clinical default (0.25 D at 45 degrees)
-- Yin et al.'s formula
+- Prof. Bu's formula
 - Population centroid
 - Eye-specific centroid
 - Age-tertile centroid
@@ -173,7 +173,7 @@ Statistical testing via Wilcoxon signed-rank tests and bootstrap 95% confidence 
 
 ### Analysis 5: Steepening case characterization
 
-Compares the 25 eyes (12.4%) with CSIA meridian above 90 degrees (steepening) against the 177 eyes with flattening. Tests all preoperative parameters with Bonferroni correction, evaluates Yin et al.'s HCDA finding, and fits a logistic regression.
+Compares the 25 eyes (12.4%) with CSIA meridian above 90 degrees (steepening) against the 177 eyes with flattening. Tests all preoperative parameters with Bonferroni correction, evaluates Prof. Bu's HCDA finding, and fits a logistic regression.
 
 **Key outputs**:
 - `fig15`: Box plots of top discriminating variables
@@ -182,9 +182,9 @@ Compares the 25 eyes (12.4%) with CSIA meridian above 90 degrees (steepening) ag
 
 ## Key findings
 
-### Our centroid replicates Yin et al.'s result
+### Our centroid replicates Prof. Bu's result
 - Our centroid: 0.44 D at 45.7 degrees (n=202)
-- Yin et al. (2025): 0.48 D at 43 degrees (n=149)
+- Prof. Bu 2025: 0.48 D at 43 degrees (n=149)
 
 ### Eye laterality is the strongest predictor of CSIA direction
 - OD centroid: 0.37 D at 60.2 degrees
@@ -194,29 +194,29 @@ Compares the 25 eyes (12.4%) with CSIA meridian above 90 degrees (steepening) ag
 
 ### Individual-level prediction is limited
 - All models yield negative R-squared in cross-validation (worse than predicting the mean)
-- Yin et al.'s formula: R-squared = -2.10 on our data
+- Prof. Bu's formula: R-squared = -2.10 on our data
 - Best model (Elastic Net, biomech + demographics): R-squared = -0.11, MAE = 0.36 D for magnitude
 - SHAP confirms: age (for magnitude) and eye (for direction) are the dominant features
 
 ### Subgroup centroids are the best practical approach
 - Eye x Age centroid: lowest mean vector error (0.59 D), significantly better than population centroid (Wilcoxon p = 0.007)
 - Eye-specific centroid alone: 0.60 D, also significantly better than population centroid (p = 0.005)
-- Yin et al.'s formula gives the highest error (0.69 D)
+- Prof. Bu's formula gives the highest error (0.69 D)
 
 ### Steepening is unpredictable
 - No preoperative variable survives Bonferroni correction
-- HCDA is not significant in our data (p = 0.57), unlike Yin et al.'s finding (p = 0.034)
+- HCDA is not significant in our data (p = 0.57), unlike Prof. Bu's finding (p = 0.034)
 - Logistic regression AUC = 0.43 (below chance)
 
 ## Module reference
 
 ### `src/config.py`
-All project-wide constants. Column name mappings, feature group definitions, Yin et al.'s reference values, cross-validation parameters, plot style settings. Change paths or random seeds here.
+All project-wide constants. Column name mappings, feature group definitions, Prof. Bu's reference values, cross-validation parameters, plot style settings. Change paths or random seeds here.
 
 ### `src/data_loader.py`
 - `get_clean_data()`: Loads the Excel file, applies column mappings, computes J0/J45, adds binary encodings and age tertiles. Saves to `data/processed/all_eyes.csv`. Returns the full DataFrame.
 - `get_subsets(df)`: Returns (OD, OS) subsets.
-- `get_patient_groups(df)`: Identifies the 19 multi-entry patients and classifies them as bilateral or same-eye repeat.
+- `get_patient_groups(df)`: Identifies the 8 bilateral patients (eyes from the same patient share an anonymous code).
 - `get_feature_matrix(df, feature_set)`: Returns (X, feature_names) for `"biomech"`, `"biomech_demo"`, or a custom list.
 
 ### `src/vector_math.py`

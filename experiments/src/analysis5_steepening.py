@@ -91,8 +91,8 @@ def run(df):
             "Cohen's d": d,
         })
 
-    # ── 5.3 HCDA specifically (Yin et al. (2025) finding) ────────────────────
-    print("\n--- 5.3 HCDA comparison (Yin et al. (2025) reported p=0.034) ---")
+    # ── 5.3 HCDA specifically (Prof. Bu's finding) ────────────────────
+    print("\n--- 5.3 HCDA comparison (Prof. Bu reported p=0.034) ---")
     t_hcda, p_hcda = stats.ttest_ind(flat["HCDA"], steep["HCDA"])
     u_hcda, p_hcda_mw = stats.mannwhitneyu(flat["HCDA"], steep["HCDA"], alternative="two-sided")
     print(f"  Flattening HCDA: {flat['HCDA'].mean():.4f} ± {flat['HCDA'].std():.4f}")

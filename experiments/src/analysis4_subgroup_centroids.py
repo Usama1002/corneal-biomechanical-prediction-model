@@ -67,7 +67,7 @@ def run(df, ml_predictions=None):
         def_j0, def_j45, actual_j0, actual_j45
     )
 
-    # Strategy 2: Yin et al. (2025) formula (magnitude only, at population centroid meridian)
+    # Strategy 2: Prof. Bu's formula (magnitude only, at population centroid meridian)
     bu_pred = config.BU_FORMULA(df["age"].values, df["IR"].values)
     overall_cent = [c for c in centroids if c["group"] == "Overall"][0]
     bu_j0, bu_j45 = vector_math.decompose_to_j0_j45(bu_pred, overall_cent["centroid_meridian"])
@@ -178,7 +178,7 @@ def run(df, ml_predictions=None):
                 "label": f'{c["group"]} ({c["centroid_mag"]:.2f} D @ {c["centroid_meridian"]:.0f}\u00b0)',
             })
 
-    # Yin et al. (2025) centroid
+    # Prof. Bu's centroid
     bu_j0, bu_j45 = vector_math.decompose_to_j0_j45(config.BU_CENTROID_MAG, config.BU_CENTROID_MERIDIAN)
     centroid_groups.append({
         "j0": [bu_j0], "j45": [bu_j45],

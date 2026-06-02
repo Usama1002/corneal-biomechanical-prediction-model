@@ -54,7 +54,7 @@ def run(df):
 
     results["bivariate_correlations"] = {"r": corr_r, "p": corr_p, "fdr_p": fdr_p}
 
-    # ── 2.2 Partial correlations (Yin et al. (2025) approach) ─────────────────
+    # ── 2.2 Partial correlations (Prof. Bu's approach) ─────────────────
     print("\n--- 2.2 Partial correlations (adjusting for Age, CCT, bIOP) ---")
     cov_cols_bu = ["age", "CCT", "bIOP"]
     pcorr_bu = {t: {} for t in targets}

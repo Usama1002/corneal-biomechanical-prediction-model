@@ -106,7 +106,7 @@ def _run_nested_cv(X, y, model_name, model_config, cv_outer, is_multi=False):
 
 
 def _run_bu_formula(df, cv_outer, X_dummy):
-    """Evaluate Yin et al. (2025) formula on the same CV folds."""
+    """Evaluate Prof. Bu's formula on the same CV folds."""
     age = df["age"].values
     ir = df["IR"].values
     actual = df["CSIA_mag"].values
@@ -241,8 +241,8 @@ def run(df):
             print(f"  {model_name}_multi -> {comp}: R²={df_f['R2'].mean():.3f}±{df_f['R2'].std():.3f}, "
                   f"MAE={df_f['MAE'].mean():.3f}±{df_f['MAE'].std():.3f}")
 
-    # ── 3.3 Yin et al. (2025) formula baseline ────────────────────────────────
-    print("\n--- 3.3 Yin et al. (2025) formula baseline ---")
+    # ── 3.3 Prof. Bu's formula baseline ────────────────────────────────
+    print("\n--- 3.3 Prof. Bu's formula baseline ---")
     bu_folds, bu_preds = _run_bu_formula(df, cv_outer, X_biomech)
     bu_summary = _aggregate_folds(bu_folds, "Bu_Formula", "Magnitude", "Age+IR")
     all_results.append(bu_summary)

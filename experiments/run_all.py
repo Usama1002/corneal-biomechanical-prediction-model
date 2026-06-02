@@ -26,12 +26,14 @@ from src.analysis2_association import run as run_analysis2
 from src.analysis3_predictive_modeling import run as run_analysis3
 from src.analysis4_subgroup_centroids import run as run_analysis4
 from src.analysis5_steepening import run as run_analysis5
+from src.analysis6_ablations import run as run_analysis6
+from src.analysis7_formula import run as run_analysis7
 
 
 def main():
     parser = argparse.ArgumentParser(description="CSIA Vector Prediction Analysis Pipeline")
-    parser.add_argument("--analyses", type=str, default="1,2,3,4,5",
-                        help="Comma-separated list of analyses to run (default: 1,2,3,4,5)")
+    parser.add_argument("--analyses", type=str, default="1,2,3,4,5,6,7",
+                        help="Comma-separated list of analyses to run (default: 1,2,3,4,5,6,7)")
     parser.add_argument("--skip-modeling", action="store_true",
                         help="Skip analysis 3 (predictive modeling)")
     args = parser.parse_args()
@@ -79,6 +81,16 @@ def main():
         t1 = time.time()
         all_results["analysis5"] = run_analysis5(df)
         print(f"\n  Analysis 5 took {time.time()-t1:.1f}s")
+
+    if 6 in analyses:
+        t1 = time.time()
+        all_results["analysis6"] = run_analysis6(df)
+        print(f"\n  Analysis 6 took {time.time()-t1:.1f}s")
+
+    if 7 in analyses:
+        t1 = time.time()
+        all_results["analysis7"] = run_analysis7(df)
+        print(f"\n  Analysis 7 took {time.time()-t1:.1f}s")
 
     elapsed = time.time() - t0
     print("\n" + "=" * 60)
